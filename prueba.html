@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Tus encabezados aquí -->
+</head>
+<body>
+    <h1>Enviar Mensajes de WhatsApp</h1>
+    <form id="message-form">
+        <label for="dias">Cantidad de días:</label>
+        <input type="number" id="dias" name="dias" required><br><br>
+        
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required><br><br>
+        
+        <label for="cuotas">Cantidad de cuotas pendientes:</label>
+        <input type="number" id="cuotas" name="cuotas" required><br><br>
+        
+        <label for="telefono">Número de teléfono:</label>
+        <input type="text" id="telefono" name="telefono" required><br><br>
+
+        <div id="fecha-ultimo-pago" style="display: none;">
+            <label for="ultimo-pago">Fecha de último pago:</label>
+            <input type="date" id="ultimo-pago" name="ultimo-pago"><br><br>
+        </div>
+        
+        <button type="button" onclick="enviarMensaje()">Enviar Mensaje</button>
+    </form>
+    
+    <div id="resultado"></div>
+    
+    <script>
+        function enviarMensaje() {
+            var dias = document.getElementById("dias").value;
+            var nombre = document.getElementById("nombre").value;
+            var cuotas_pendientes = document.getElementById("cuotas").value;
+            var numero_telefono = document.getElementById("telefono").value;
+            var mensaje = "";
+
+            if (dias <= 30) {
+                mensaje = `Buenos días, ${nombre}, desde el Dpto. de Recuperación de Créditos de la CU, le informamos que posee ${cuotas_pendientes} cuotas pendientes con ${dias} días de mora, precisamos la regularización en la brevedad posible. DE MANERA A NO AFECTAR SU HISTORIAL DE PAGOS. Para consultas sobre DETALLES de la deuda, CON MUCHO GUSTO LE FACILITAREMOS`;
+            } else if (dias >= 31 && dias < 60) {
+                mensaje = `Buenos días, ${nombre}, desde el Dpto. de Recuperación de Créditos de la CU, le informamos que posee ${cuotas_pendientes} cuotas pendientes con ${dias} días de mora, precisamos la regularización en la brevedad posible. DE MANERA A NO AFECTAR SU HISTORIAL DE PAGOS. Para consultas sobre DETALLES de la deuda, CON MUCHO GUSTO LE FACILITAREMOS. MUCHAS GRACIAS`;
+            } else if (dias >= 61 && dias < 90) {
+                mensaje = `Buenos días, ${nombre}, desde el Dpto. de Recuperación de Créditos de la CU - PREJUDICIAL, le informamos que posee ${cuotas_pendientes} cuotas pendientes con ${dias} días de mora (91 días de mora ingresa a base de Informconf). Contamos con opciones de pago, favor contactar EN LA BREVEDAD.`;
+            } else {
+                // Cuando los días de mora superan 91, mostramos el campo de fecha de último pago
+                var fechaUltimoPago = document.getElementById("ultimo-pago").value;
+                mensaje = `Buenos días, ${nombre}, desde el Dpto. de Recuperación de Créditos de la CU - PREJUDICIAL, le informamos que posee ${cuotas_pendientes} cuotas pendientes con ${dias} días de mora. Último pago registrado en fecha ${fechaUltimoPago}. Nos urge conversar con usted. ATENDIENDO EL RANGO SE ENCUENTRA SU CARPETA. Favor CONTACTAR por este medio EN LA BREVEDAD.`;
+            }
+
+            // Mostrar el mensaje en la página
+            document.getElementById("resultado").innerHTML = mensaje;
+
+            // Enviar el mensaje por WhatsApp (debes implementar esta parte)
+            enviarMensajeWhatsApp(numero_telefono, mensaje);
+        }
+
+        function enviarMensajeWhatsApp(numero, mensaje) {
+            // Aquí debes implementar la lógica para enviar el mensaje por WhatsApp
+            // Puedes utilizar la API de WhatsApp o un servicio de terceros para hacerlo
+            // Ejemplo: window.open(`https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(mensaje)}`);
+        }
+
+        // Mostrar el campo de fecha de último pago cuando los días de mora superan 91
+        document.getElementById("dias").addEventListener("change", function() {
+            var dias = document.getElementById("dias").value;
+            var fechaUltimoPago = document.getElementById("fecha-ultimo-pago");
+            if (dias > 91) {
+                fechaUltimoPago.style.display = "block";
+            } else {
+                fechaUltimoPago.style.display = "none";
+            }
+        });
+    </script>
+</body>
+</html>
