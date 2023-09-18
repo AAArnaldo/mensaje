@@ -1,92 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        body {
-            background: linear-gradient(to bottom, #f2d9e6, #f5f5f5); /* Fondo rosa pastel degradado */
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-
-        h1 {
-            color: #13293d; /* Azul marino */
-            font-size: 28px;
-            margin-top: 20px;
-        }
-
-        form {
-            background-color: #ffffff; /* Fondo blanco */
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1); /* Sombra */
-            margin: 20px auto;
-            max-width: 400px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            color: #13293d; /* Azul marino */
-            font-size: 18px;
-            text-align: left;
-        }
-
-        input[type="number"],
-        input[type="text"],
-        input[type="date"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        button {
-            background-color: #13293d; /* Azul marino */
-            color: #ffffff; /* Texto blanco */
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0a1c2d; /* Azul marino más oscuro al pasar el mouse */
-        }
-
-        #resultado {
-            margin-top: 20px;
-            font-size: 20px;
-            color: #13293d; /* Azul marino */
-        }
-
-        #fecha-ultimo-pago {
-            display: none;
-        }
-    </style>
+    <!-- Tus encabezados aquí -->
 </head>
 <body>
-    <h1>Enviar Mensajes</h1>
+    <h1>Enviar Mensajes de </h1>
     <form id="message-form">
-        <label for="dias">Días de mora:</label>
-        <input type="number" id="dias" name="dias" required><br>
+        <label for="dias">Cantidad de días:</label>
+        <input type="number" id="dias" name="dias" required><br><br>
         
         <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" required><br>
+        <input type="text" id="nombre" name="nombre" required><br><br>
         
-        <label for="cuotas">Cuotas pendientes:</label>
-        <input type="number" id="cuotas" name="cuotas" required><br>
+        <label for="cuotas">Cantidad de cuotas pendientes:</label>
+        <input type="number" id="cuotas" name="cuotas" required><br><br>
         
         <label for="telefono">Número de teléfono:</label>
-        <input type="text" id="telefono" name="telefono" required><br>
+        <input type="text" id="telefono" name="telefono" required><br><br>
 
-        <div id="fecha-ultimo-pago">
+        <div id="fecha-ultimo-pago" style="display: none;">
             <label for="ultimo-pago">Fecha de último pago:</label>
-            <input type="date" id="ultimo-pago" name="ultimo-pago"><br>
+            <input type="date" id="ultimo-pago" name="ultimo-pago"><br><br>
         </div>
         
         <button type="button" onclick="enviarMensaje()">Enviar Mensaje</button>
@@ -96,7 +30,38 @@
     
     <script>
         function enviarMensaje() {
-            // El código JavaScript es el mismo que el proporcionado anteriormente
+            var dias = document.getElementById("dias").value;
+            var nombre = document.getElementById("nombre").value;
+            var cuotas_pendientes = document.getElementById("cuotas").value;
+            var numero_telefono = document.getElementById("telefono").value;
+            var mensaje = "";
+
+            // Aquí agregamos el prefijo +595 al número de teléfono si no lo tiene
+            if (!numero_telefono.startsWith("+595")) {
+                numero_telefono = "+595" + numero_telefono;
+            }
+
+            if (dias <= 30) {
+                mensaje = `Buenos días, ${nombre}, desde el Dpto. de Recuperación de Créditos de la CU, le informamos que posee ${cuotas_pendientes} cuotas pendientes con ${dias} días de mora, precisamos la regularización en la brevedad posible. DE MANERA A NO AFECTAR SU HISTORIAL DE PAGOS. Para consultas sobre DETALLES de la deuda, CON MUCHO GUSTO LE FACILITAREMOS`;
+            } else if (dias >= 31 && dias < 60) {
+                mensaje = `Buenos días, ${nombre}, desde el Dpto. de Recuperación de Créditos de la CU, le informamos que posee ${cuotas_pendientes} cuotas pendientes con ${dias} días de mora, precisamos la regularización en la brevedad posible. DE MANERA A NO AFECTAR SU HISTORIAL DE PAGOS. Para consultas sobre DETALLES de la deuda, CON MUCHO GUSTO LE FACILITAREMOS. MUCHAS GRACIAS`;
+            } else if (dias >= 61 && dias < 90) {
+                mensaje = `Buenos días, ${nombre}, desde el Dpto. de Recuperación de Créditos de la CU - PREJUDICIAL, le informamos que posee ${cuotas_pendientes} cuotas pendientes con ${dias} días de mora (91 días de mora ingresa a base de Informconf). Contamos con opciones de pago, favor contactar EN LA BREVEDAD.`;
+            } else {
+                // Cuando los días de mora superan 91, mostramos el campo de fecha de último pago
+                var fechaUltimoPago = document.getElementById("ultimo-pago").value;
+                mensaje = `Buenos días, ${nombre}, desde el Dpto. de Recuperación de Créditos de la CU - PREJUDICIAL, le informamos que posee ${cuotas_pendientes} cuotas pendientes con ${dias} días de mora. Último pago registrado en fecha ${fechaUltimoPago}. Nos urge conversar con usted. ATENDIENDO EL RANGO SE ENCUENTRA SU CARPETA. Favor CONTACTAR por este medio EN LA BREVEDAD.`;
+            }
+
+            // Mostrar el mensaje en la página
+            document.getElementById("resultado").innerHTML = mensaje;
+
+            // Enviar el mensaje por WhatsApp (debes implementar esta parte)
+            enviarMensajeWhatsApp(numero_telefono, mensaje);
+        }
+
+        function enviarMensajeWhatsApp(numero, mensaje) {
+            window.open(`https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(mensaje)}`);
         }
 
         // Mostrar el campo de fecha de último pago cuando los días de mora superan 91
