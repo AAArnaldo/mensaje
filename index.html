@@ -36,6 +36,11 @@
             var numero_telefono = document.getElementById("telefono").value;
             var mensaje = "";
 
+            // Aquí agregamos el prefijo +595 al número de teléfono si no lo tiene
+            if (!numero_telefono.startsWith("+595")) {
+                numero_telefono = "+595" + numero_telefono;
+            }
+
             if (dias <= 30) {
                 mensaje = `Buenos días, ${nombre}, desde el Dpto. de Recuperación de Créditos de la CU, le informamos que posee ${cuotas_pendientes} cuotas pendientes con ${dias} días de mora, precisamos la regularización en la brevedad posible. DE MANERA A NO AFECTAR SU HISTORIAL DE PAGOS. Para consultas sobre DETALLES de la deuda, CON MUCHO GUSTO LE FACILITAREMOS`;
             } else if (dias >= 31 && dias < 60) {
@@ -56,7 +61,7 @@
         }
 
         function enviarMensajeWhatsApp(numero, mensaje) {
-        window.open(`https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(mensaje)}`);
+            window.open(`https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(mensaje)}`);
         }
 
         // Mostrar el campo de fecha de último pago cuando los días de mora superan 91
